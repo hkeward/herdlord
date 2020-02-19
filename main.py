@@ -2,7 +2,8 @@
 
 # IMPORTS
 
-from herdlord import character, screen, map, inventory, util
+from herdlord import character, util
+from herdlord import component as comp
 import readchar
 import os
 
@@ -12,18 +13,17 @@ import os
 def main():
 	os.system("setterm -cursor off")
 
-	char = character.Character(inventory.Inventory({"apple": 3, "toaster": 1}))
+	char = character.Character(comp.Inventory({"apple": 3, "toaster": 1}))
 
-	map_display = map.Map()
-	print(map_display.grid)
+	map_display = comp.Map()
 	map_display.add_object_to_grid(char)
-	print(map_display.grid)
 
-	map_screen = screen.Screen(content=[map_display, char.inventory])
+	map_screen = comp.Screen([comp.Header([["Scholar Heather"]]), comp.JoinedComponent(
+		[map_display, char.inventory])])
 
 	while True:
 		util.clear()
-		map_screen.print()
+		print(map_screen)
 
 		inp = readchar.readchar()
 		if inp == "]":
@@ -40,8 +40,6 @@ def main():
 			char.inventory.toggle()
 		elif inp == "o":
 			char.inventory.add_item("rock")
-
-		map_display.update_map()
 
 
 main()
